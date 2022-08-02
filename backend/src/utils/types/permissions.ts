@@ -1,5 +1,5 @@
-export type GRUD = 'c' | 'r' | 'u' | 'd';
-export type RNG = 'all' | 'own' | 'none';
+export type GRUD = "c" | "r" | "u" | "d";
+export type RNG = "all" | "own" | "none";
 export type PermissionType = {
   menus: {
     dashboard: boolean;
@@ -15,9 +15,9 @@ export type PermissionType = {
 };
 
 export const defaultPermissions: PermissionType = {
-  menus: { dashboard: false, employees: [false, 'r'], reports: [], settings: [] },
-  kpiInfo: ['own', 'r'],
-  salaryInfo: ['own', 'r'],
-  ladderInfo: ['own', 'r'],
-  profile: ['own', 'r'],
+  menus: { dashboard: false, employees: [false, "r"], reports: [], settings: [] },
+  kpiInfo: ["own", "r"],
+  salaryInfo: ["own", "r"],
+  ladderInfo: ["own", "r"],
+  profile: ["own", "r"],
 };

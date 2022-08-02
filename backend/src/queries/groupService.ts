@@ -1,6 +1,6 @@
-import { db } from '../models';
-import { Request } from 'express';
-import { PermissionType } from '../utils/types/permissions';
+import { db } from "../models";
+import { Request } from "express";
+import { PermissionType } from "../utils/types/permissions";
 const Group = db.group;
 export const getGroups = () => {
   return Group.find({});

@@ -1,1 +1,1 @@
-export type RoleType  = "basic" | "supervisor" | "admin" | "emoloyee";
+export type RoleType = "basic" | "supervisor" | "admin" | "emoloyee";

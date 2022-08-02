@@ -7,10 +7,7 @@ import {
 } from "../queries/permissionService";
 import { Request, Response } from "express";
 
-export const getPermissionsService = async (
-  request: Request,
-  response: Response
-) => {
+export const getPermissionsService = async (request: Request, response: Response) => {
   console.log("getPermissionService running");
   try {
     response.send(await getPermissions());
@@ -20,10 +17,7 @@ export const getPermissionsService = async (
   }
 };
 
-export const getPermissionService = async (
-  request: Request,
-  response: Response
-) => {
+export const getPermissionService = async (request: Request, response: Response) => {
   console.log("getPermissionService running");
   try {
     const result = await getPermission(request);
@@ -34,10 +28,7 @@ export const getPermissionService = async (
   }
 };
 
-export const updatePermissionService = async (
-  request: Request,
-  response: Response
-) => {
+export const updatePermissionService = async (request: Request, response: Response) => {
   console.log("UpdatePermissionService running");
   try {
     const result = await updatePermission(request);
@@ -48,10 +39,7 @@ export const updatePermissionService = async (
   }
 };
 
-export const createPermissionService = async (
-  request: Request,
-  response: Response
-) => {
+export const createPermissionService = async (request: Request, response: Response) => {
   console.log("CreatePermissionService running");
   try {
     const result = await addPermission(request);
@@ -62,10 +50,7 @@ export const createPermissionService = async (
   }
 };
 
-export const deletePermissionService = async (
-  request: Request,
-  response: Response
-) => {
+export const deletePermissionService = async (request: Request, response: Response) => {
   console.log("deletePermissionService running");
   try {
     const result = await deletePermission(request);

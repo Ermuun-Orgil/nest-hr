@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
-const db = require('../models');
+const db = require("../models");
 const ROLES = db.ROLES;
 const User = db.user;
 const checkDuplicateUsernameOrEmail = (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +13,7 @@ const checkDuplicateUsernameOrEmail = (req: Request, res: Response, next: NextFu
       return;
     }
     if (user) {
-      res.status(400).send({ message: 'Failed! Username is already in use!' });
+      res.status(400).send({ message: "Failed! Username is already in use!" });
       return;
     }
     // Email
@@ -25,7 +25,7 @@ const checkDuplicateUsernameOrEmail = (req: Request, res: Response, next: NextFu
         return;
       }
       if (user) {
-        res.status(400).send({ message: 'Failed! Email is already in use!' });
+        res.status(400).send({ message: "Failed! Email is already in use!" });
         return;
       }
       next();

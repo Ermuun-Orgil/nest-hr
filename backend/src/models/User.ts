@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { ROLE_TYPES } from '../utils/constants/types';
+import mongoose from "mongoose";
+import { ROLE_TYPES } from "../utils/constants/types";
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -17,6 +17,6 @@ const userSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const User = mongoose.model('users', userSchema);
+const User = mongoose.model("users", userSchema);
 
 export default User;

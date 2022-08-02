@@ -1,6 +1,6 @@
-import { db } from '../models';
-import { Request } from 'express';
-import { UserType } from '../utils/types/user';
+import { db } from "../models";
+import { Request } from "express";
+import { UserType } from "../utils/types/user";
 
 const User = db.user;
 //get all users

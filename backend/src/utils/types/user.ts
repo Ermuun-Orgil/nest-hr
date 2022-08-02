@@ -1,4 +1,4 @@
-import { PermissionType } from './permissions';
+import { PermissionType } from "./permissions";
 
 export interface UserType {
   _id: string;

@@ -38,7 +38,7 @@ Now to the important part, when writing commits, it's important to think about:
 | fix(commands): bump error when no user provided | fix: stuff                      |
 | feat: add new commit command                    | feat: commit command introduced |
 
-## Commitizen
+## Commitizen plugin
 
 To commit:
 

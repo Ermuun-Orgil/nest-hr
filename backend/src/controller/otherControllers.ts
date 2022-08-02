@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import {
   getPermission,
   getPermissions,
@@ -5,7 +6,6 @@ import {
   deletePermission,
   updatePermission,
 } from "../queries/permissionService";
-import { Request, Response } from "express";
 
 export const getPermissionsService = async (request: Request, response: Response) => {
   console.log("getPermissionService running");
@@ -13,6 +13,7 @@ export const getPermissionsService = async (request: Request, response: Response
     response.send(await getPermissions());
   } catch (error) {
     /* istanbul ignore next */
+    //
     response.status(500).send(error);
   }
 };
@@ -20,8 +21,7 @@ export const getPermissionsService = async (request: Request, response: Response
 export const getPermissionService = async (request: Request, response: Response) => {
   console.log("getPermissionService running");
   try {
-    const result = await getPermission(request);
-    response.status(200).send(result);
+    response.status(200).send(await getPermission(request));
   } catch (error) {
     /* istanbul ignore next */
     response.status(500).send(error);
@@ -35,6 +35,7 @@ export const updatePermissionService = async (request: Request, response: Respon
     response.status(200).send(result);
   } catch (error) {
     /* istanbul ignore next */
+    //
     response.status(500).send(error);
   }
 };
@@ -53,7 +54,7 @@ export const createPermissionService = async (request: Request, response: Respon
 export const deletePermissionService = async (request: Request, response: Response) => {
   console.log("deletePermissionService running");
   try {
-    const result = await deletePermission(request);
+    await deletePermission(request);
     response.status(200).send({
       message: "Deleted successfully",
     });

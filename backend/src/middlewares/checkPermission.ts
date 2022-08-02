@@ -15,25 +15,30 @@ export const authUsers = async (req: Request, res: Response, next: NextFunction)
     if (user.userGroup.length === 0) {
       res.status(401).json({ message: "Unauthorized request" });
       return;
-    } else {
-      const groups = await getGroups();
-      if (user.userGroup.filter(userGroup => groups.find(g => g.name == userGroup)?.menus?.employees[0]).length != 0) {
-        next();
-        return;
-      } else {
-        res.status(401).json({ message: "Unauthorized request" });
-        return;
-      }
     }
+    const groups = await getGroups();
+    if (user.userGroup.filter(userGroup => groups.find(g => g.name === userGroup)?.menus?.employees[0]).length !== 0) {
+      next();
+      return;
+    }
+    res.status(401).json({ message: "Unauthorized request" });
+    return;
   } catch (err) {
     next(err);
   }
 };
 
+function parseJwt(token: string) {
+  const base64Payload = token.split(".")[1];
+  const payload = Buffer.from(base64Payload, "base64");
+  return JSON.parse(payload.toString());
+}
+
 export const authAddtogroup = async (req: Request, res: Response, next: NextFunction) => {
   console.log("authAddtogroup is running");
   const { token } = req.body;
   if (!token) {
+    //
     res.status(400).send("No token provided!");
     return;
   }
@@ -46,20 +51,13 @@ export const authAddtogroup = async (req: Request, res: Response, next: NextFunc
     }
     console.log(user);
     console.log(user.role);
-    if (user.role != "admin" && user.role != "hr") {
+    if (user.role !== "admin" && user.role !== "hr") {
       res.status(401).json({ message: "Unauthorized request" });
       return;
-    } else {
-      next();
-      return;
     }
+    next();
+    return;
   } catch (err) {
     next(err);
   }
 };
-
-function parseJwt(token: string) {
-  var base64Payload = token.split(".")[1];
-  var payload = Buffer.from(base64Payload, "base64");
-  return JSON.parse(payload.toString());
-}

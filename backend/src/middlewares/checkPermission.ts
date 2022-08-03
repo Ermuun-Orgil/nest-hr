@@ -1,44 +1,48 @@
 import { NextFunction, Request, Response } from "express";
-import { getGroups } from "../queries/groupService";
-import { findUserId } from "../queries/userService";
+import { findUserId, parseJwt } from "../queries/userService";
 import { UserType } from "../utils/types/user";
 
 export const authUsers = async (req: Request, res: Response, next: NextFunction) => {
   console.log("authUsers running");
+  const token = req.headers.authorization;
+  const { mode, act, groups } = res.locals;
 
-  try {
-    const user: UserType | null = await findUserId({ params: { id: req.body.id } });
-    if (!user) {
-      res.status(401).json({ message: "User not found!" });
-      return;
-    }
-    if (user.userGroup.length === 0) {
-      res.status(401).json({ message: "Unauthorized request" });
-      return;
-    }
-    const groups = await getGroups();
-    if (user.userGroup.filter(userGroup => groups.find(g => g.name === userGroup)?.menus?.employees[0]).length !== 0) {
-      next();
-      return;
-    }
-    res.status(401).json({ message: "Unauthorized request" });
+  if (!token) {
+    res.status(401).json({ message: "No Token found!" });
     return;
+  }
+  try {
+    const userGroups: string[] = parseJwt(token).userGroup;
+    if (userGroups.length === 0) {
+      res.status(401).json({ message: "Unauthorized request 1" });
+      return;
+    }
+    groups
+      .then((allGroups: [any]) => {
+        const currentGroups = allGroups.filter(group => userGroups.find(a => group._id.toString() === a));
+        for (let i = 0; i < currentGroups.length; i += 1) {
+          for (let j = 0; currentGroups[i].permissions.length > j; j += 1) {
+            if (currentGroups[i].permissions[j][mode][act]) {
+              console.log("true: ", currentGroups[i].permissions[j][mode][act]);
+              next();
+              return;
+            }
+          }
+        }
+        res.status(401).json({ message: "Unauthorized request 2" });
+      })
+      .catch(() => res.status(401).json({ message: "Unauthorized request 2" }));
+
+    // return;
   } catch (err) {
     next(err);
   }
 };
 
-function parseJwt(token: string) {
-  const base64Payload = token.split(".")[1];
-  const payload = Buffer.from(base64Payload, "base64");
-  return JSON.parse(payload.toString());
-}
-
 export const authAddtogroup = async (req: Request, res: Response, next: NextFunction) => {
   console.log("authAddtogroup is running");
   const { token } = req.body;
   if (!token) {
-    //
     res.status(400).send("No token provided!");
     return;
   }
@@ -49,8 +53,6 @@ export const authAddtogroup = async (req: Request, res: Response, next: NextFunc
       res.status(401).json({ message: "User not found!" });
       return;
     }
-    console.log(user);
-    console.log(user.role);
     if (user.role !== "admin" && user.role !== "hr") {
       res.status(401).json({ message: "Unauthorized request" });
       return;

@@ -1,6 +1,12 @@
 import { NextFunction, Response, Request } from "express";
 
-export const checkMiddle = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("checkMiddle is running");
-  next();
-};
+export default function checkMiddle(opt: any) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    res.locals.mode = opt.mode;
+    res.locals.action = opt.action;
+    res.locals.groups = opt.groups;
+
+    console.log("checkMiddle is running");
+    next();
+  };
+}

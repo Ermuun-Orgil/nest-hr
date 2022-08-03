@@ -1,18 +1,16 @@
-import { db } from "../models";
 import { Request } from "express";
+import { db } from "../models";
 import { PermissionType } from "../utils/types/permissions";
+
 const Group = db.group;
-export const getGroups = () => {
-  return Group.find({});
+export const getGroups = async () => {
+  const groups = await Group.find({});
+  return groups;
 };
 
 export const isPermitted = (name: string, callback: any) => {
-  Group.findOne({ name: name }, (error: any, data: any) => {
-    if (error) {
-      return callback(error);
-    } else {
-      return callback(data);
-    }
+  Group.findOne({ name }, (error: any, data: any) => {
+    return error ? callback(error) : callback(data);
   });
 };
 

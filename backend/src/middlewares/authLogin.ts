@@ -1,53 +1,57 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import { db } from "../models";
 import { UserType } from "../utils/types/user";
 
-const User = db.user;
-export const authLogin = async (req: Request, res: Response, next: NextFunction) => {
+export default async function authLogin(req: Request, res: Response) {
   const { email, password } = req.body;
   let existingUser: UserType | null;
   console.log("authLogin is runngin");
   try {
-    existingUser = await User.findOne({ email: email });
+    // eslint-disable-next-line no-use-before-define
+    existingUser = await db.user.findOne({ email });
   } catch {
-    const error = new Error("Error! Something went wrong.");
     return res.status(400).json({
       success: false,
-      error: error,
+      error: "Error! Something went wrong.",
     });
   }
-  if (!existingUser || existingUser.password != password) {
-    const error = Error("Wrong details please check at once");
+  if (!existingUser || existingUser.password !== password) {
     return res.status(400).json({
       success: false,
-      error: error,
+      error: "Wrong details please check at once",
     });
   }
   let token: string;
   try {
-    //Creating jwt token
-    token = sign({ _id: existingUser._id, email: existingUser.email }, process.env.JWT_SECRET || "", {
-      expiresIn: "1h",
-    });
+    //  Creating jwt token
+
+    console.log("Existing User:", existingUser);
+    token = sign(
+      { _id: existingUser._id, email: existingUser.email, userGroup: existingUser.userGroup },
+      process.env.JWT_SECRET || "",
+      {
+        expiresIn: "1h",
+      }
+    );
   } catch (err) {
     console.log(err);
-    const error = new Error("Error! Something went wrong.");
     return res.status(400).json({
       success: false,
-      error: error,
+      error: "Error! Something went wrong.",
     });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
+    // eslint-disable-next-line no-use-before-define
     data: {
       userId: existingUser._id,
       email: existingUser.email,
-      token: token,
+      token,
     },
   });
-};
+}
 
 /** TOKEN DECODER
   function parseJwt(token: string) {

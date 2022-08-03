@@ -10,6 +10,9 @@ const groupSchema = new Schema({
     reports: { type: Array, default: [false, "r"] },
     settings: { type: Array, default: [false, "r"] },
   },
+  permissions: {
+    type: [Object],
+  },
   kpiInfo: { type: Array, default: ["own", "r"] },
   salaryInfo: { type: Array, default: ["own", "r"] },
   ladderInfo: { type: Array, default: ["own", "r"] },

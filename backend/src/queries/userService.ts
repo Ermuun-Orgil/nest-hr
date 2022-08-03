@@ -1,14 +1,22 @@
+import { Request, Response } from "express";
 import { db } from "../models";
-import { Request } from "express";
 import { UserType } from "../utils/types/user";
 
+interface ParseJwtType {
+  _id: string;
+  email: string;
+  userGroup: string[];
+}
+
 const User = db.user;
-//get all users
+
+//  get all users
 export const getUsers = () => {
   return User.find({});
 };
 
-//get one user by ID
+//  get one user by ID
+
 export const findUserId = (request: Request | { params: { id: string } }): UserType | null => {
   return User.findOne({ _id: request.params.id }) as unknown as UserType | null;
 };
@@ -38,6 +46,15 @@ export const addUserToGroup = (request: Request) => {
     }
   );
 };
-export const deleteUser = (request: Request) => {
-  return User.findByIdAndDelete(request.body._id);
+export const deleteUser = (req: Request) => {
+  return User.findByIdAndDelete(req.body._id);
+};
+export function parseJwt(token: string): ParseJwtType {
+  const base64Payload = token.split(".")[1];
+  const payload = Buffer.from(base64Payload, "base64");
+  return JSON.parse(payload.toString());
+}
+
+export const getKpi = (req: Request, res: Response) => {
+  console.log(res.locals.user);
 };

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx jest --verbose --runInBand",
     "coverage": "npx jest --coverage --runInBand",
-    "start": "yarn build && node dist/src/server.js",
+    "start": "yarn build && nodemon dist/src/server.js",
     "build": "npx tsc"
   },
   "keywords": [],

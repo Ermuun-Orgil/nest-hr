@@ -1,23 +1,19 @@
 import { NextFunction, Request, Response } from "express";
-// import { findUserId, parseJwt } from "../queries/userService";
-// import { UserType, IPermission } from "../utils/types/user";
 import { verify } from "jsonwebtoken";
-import User from "../models/User";
-// import express from "express";
+import db from "../models";
+// import { findUserId, parseJwt } from "../queries/userService";
+
+const User = db.user;
 
 // Checking token validation
 export const tokenCheck = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("authenticateToken is running");
   const token: string | undefined = req.headers?.authorization;
-
-  // (await User.where("members")).includes(user._id)
-  // User.where("members").elemMatch();
 
   try {
     if (!token) {
       res.status(401).json({ message: "No token provided or Inviled Token" });
+      return;
     }
-    console.log("token: ", token);
     verify(token.split(" ")[1], process.env.JWT_SECRET || "secret", (err: any, decoded: any) => {
       if (err) res.status(401).json({ message: "Inviled Token", error: err });
       res.locals.userId = decoded._id;
@@ -49,14 +45,15 @@ export const checkPermission =
       .select("userGroup");
     try {
       userWithGroups.userGroup.forEach((group: any) => {
-        if (group.permissions && group.permissions[0][module]) {
-          if (group.permissions[0][module][action]) {
+        if (group.permissions && group.permissions[module]) {
+          if (group.permissions[module][action]) {
             permitted = true;
           }
         }
       });
     } catch (e) {
-      res.status(200).send(`error: ${e}`);
+      res.status(400).send(`error: ${e}`);
+      return;
     }
     if (!permitted)
       res.status(403).send({

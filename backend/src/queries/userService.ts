@@ -1,12 +1,13 @@
-import { Request, Response } from "express";
-import { db } from "../models";
+import { Request } from "express";
+import { authLogin } from "../controller/authController";
+import db from "../models";
 import { UserType } from "../utils/types/user";
 
-interface ParseJwtType {
-  _id: string;
-  email: string;
-  userGroup: string[];
-}
+// interface ParseJwtType {
+//   _id: string;
+//   email: string;
+//   userGroup: string[];
+// }
 
 const User = db.user;
 
@@ -16,7 +17,6 @@ export const getUsers = () => {
 };
 
 //  get one user by ID
-
 export const findUserId = (request: Request | { params: { id: string } }): UserType | null => {
   return User.findOne({ _id: request.params.id }) as unknown as UserType | null;
 };
@@ -28,7 +28,17 @@ export const findUserByEmail = (request: Request) => {
 };
 
 export const updateUser = (request: Request) => {
-  return User.findByIdAndUpdate(request.params.id, request.body, {
+  if (request.body.action) {
+    const action = `$${request.body.action}`;
+    return User.findByIdAndUpdate(
+      request.body.userId,
+      { [action]: { userGroup: request.body.groupId } },
+      {
+        new: true,
+      }
+    );
+  }
+  return User.findByIdAndUpdate(request.body.userId, request.body.update, {
     new: true,
   });
 };
@@ -37,24 +47,13 @@ export const addUser = (request: Request) => {
   return new User(request.body).save();
 };
 
-export const addUserToGroup = (request: Request) => {
-  return User.findByIdAndUpdate(
-    request.body.user,
-    { $push: { userGroup: request.body.group } },
-    {
-      new: true,
-    }
-  );
-};
 export const deleteUser = (req: Request) => {
   return User.findByIdAndDelete(req.body._id);
 };
-export function parseJwt(token: string): ParseJwtType {
-  const base64Payload = token.split(".")[1];
-  const payload = Buffer.from(base64Payload, "base64");
-  return JSON.parse(payload.toString());
-}
-
-export const getKpi = (req: Request, res: Response) => {
-  console.log(res.locals.user);
-};
+// this function will be used later
+// export function parseJwt(token: string): ParseJwtType {
+//   const base64Payload = token.split(".")[1];
+//   const payload = Buffer.from(base64Payload, "base64");
+//   return JSON.parse(payload.toString());
+// }
+export const loginUser = authLogin;

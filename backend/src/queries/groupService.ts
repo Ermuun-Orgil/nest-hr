@@ -1,17 +1,10 @@
 import { Request } from "express";
-import { db } from "../models";
-import { PermissionType } from "../utils/types/permissions";
+import db from "../models";
 
 const Group = db.group;
 export const getGroups = async () => {
   const groups = await Group.find({});
   return groups;
-};
-
-export const isPermitted = (name: string, callback: any) => {
-  Group.findOne({ name }, (error: any, data: any) => {
-    return error ? callback(error) : callback(data);
-  });
 };
 
 export const updateGroup = (request: Request) => {
@@ -21,7 +14,7 @@ export const updateGroup = (request: Request) => {
 };
 
 export const addGroup = (request: Request) => {
-  return new Group(request.body as PermissionType).save();
+  return new Group(request.body).save();
 };
 
 export const deleteGroup = (request: Request) => {

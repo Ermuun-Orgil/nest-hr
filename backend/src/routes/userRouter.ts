@@ -1,21 +1,22 @@
 import express from "express";
 import {
+  createUserService,
   getUsersService,
+  loginService,
   // getUserService,
-  // createUserService,
   // deleteUserService,
-  // updateUserService,
-  // addUserToGroupService,
+  updateUserService,
 } from "../controller/userControllers";
-import { checkPermission, tokenCheck } from "../middlewares";
-// import checkMiddle from "../middlewares/checkMiddle";
-// import kpiPermission from "../middlewares/kpiPermission";
-import authLogin from "../middlewares/authLogin";
-// import { getGroups } from "../queries/groupService";
+import { checkPermission, tokenCheck } from "../middlewares/middlewares";
+import { authRegister } from "../controller/authController";
 
 const userRouter = express.Router();
 
+userRouter.post("/login", loginService);
+userRouter.post("/register", [authRegister], createUserService);
 userRouter.get("/users", [tokenCheck, checkPermission({ module: "users", action: "read" })], getUsersService);
+userRouter.patch("/users", [tokenCheck, checkPermission({ module: "users", action: "update" })], updateUserService);
+
 // userRouter.get("/user/:id", getUserService);
 // userRouter.patch("/user/:id", updateUserService);
 // userRouter.post(
@@ -27,6 +28,4 @@ userRouter.get("/users", [tokenCheck, checkPermission({ module: "users", action:
 // userRouter.post("/addtogroup", [authenticateToken], addUserToGroupService);
 
 // In order to get Token use this API
-userRouter.post("/login", authLogin);
-
 export default userRouter;

@@ -5,8 +5,6 @@ export default function checkMiddle(opt: any) {
     res.locals.mode = opt.mode;
     res.locals.action = opt.action;
     res.locals.groups = opt.groups;
-
-    console.log("checkMiddle is running");
     next();
   };
 }

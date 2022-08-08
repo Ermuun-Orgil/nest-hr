@@ -1,8 +1,7 @@
-import { getGroups, addGroup, deleteGroup, updateGroup } from "../queries/groupService";
 import { Request, Response } from "express";
+import { getGroups, addGroup, deleteGroup, updateGroup } from "../queries/groupService";
 
 export const getGroupsService = async (request: Request, response: Response) => {
-  console.log("GetGroupService running: ");
   try {
     response.send(await getGroups());
   } catch (error) {
@@ -12,7 +11,6 @@ export const getGroupsService = async (request: Request, response: Response) => 
 };
 
 export const getGroupService = async (request: Request, response: Response) => {
-  console.log("getGroupService running");
   try {
     response.status(200).send("result");
   } catch (error) {
@@ -22,7 +20,6 @@ export const getGroupService = async (request: Request, response: Response) => {
 };
 
 export const updateGroupService = async (request: Request, response: Response) => {
-  console.log("UpdateGroupService running");
   try {
     const result = await updateGroup(request);
     response.status(200).send(result);
@@ -33,7 +30,6 @@ export const updateGroupService = async (request: Request, response: Response) =
 };
 
 export const createGroupService = async (request: Request, response: Response) => {
-  console.log("CreateGroupService running");
   try {
     const result = await addGroup(request);
     response.status(201).send(result);
@@ -44,11 +40,11 @@ export const createGroupService = async (request: Request, response: Response) =
 };
 
 export const deleteGroupService = async (request: Request, response: Response) => {
-  console.log("deleteGroupService running");
   try {
     const result = await deleteGroup(request);
     response.status(200).send({
       message: "Deleted successfully",
+      data: result,
     });
   } catch (error) {
     /* istanbul ignore next */

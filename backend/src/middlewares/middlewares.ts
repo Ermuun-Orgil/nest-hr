@@ -15,22 +15,21 @@ export const tokenCheck = async (req: Request, res: Response, next: NextFunction
 
   try {
     if (!token) {
-      return res.status(401).json({ message: "No token provided or Inviled Token" });
+      res.status(401).json({ message: "No token provided or Inviled Token" });
     }
     console.log("token: ", token);
     verify(token.split(" ")[1], process.env.JWT_SECRET || "secret", (err: any, decoded: any) => {
-      if (err) return res.status(401).json({ message: "Inviled Token", error: err });
+      if (err) res.status(401).json({ message: "Inviled Token", error: err });
       res.locals.userId = decoded._id;
       req.body.user = decoded;
-      return next();
+      next();
     });
-    return "a";
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Expired token" });
+      res.status(401).json({ message: "Expired token" });
     }
 
-    return res.status(500).json({ message: "Failed to authenticate user" });
+    res.status(500).json({ message: "Failed to authenticate user" });
   }
 };
 
@@ -40,7 +39,7 @@ export const checkPermission =
   async (req: Request, res: Response, next: NextFunction) => {
     let permitted = false;
     if (!res.locals.userId && !req.body?._id)
-      return res.status(403).send({
+      res.status(403).send({
         message: "User not found",
       });
 
@@ -57,14 +56,14 @@ export const checkPermission =
         }
       });
     } catch (e) {
-      return res.status(200).send(`error: ${e}`);
+      res.status(200).send(`error: ${e}`);
     }
     if (!permitted)
-      return res.status(403).send({
+      res.status(403).send({
         message: "Permission denied",
       });
 
-    return next();
+    next();
   };
 
 // export const authAddtogroup = async (req: Request, res: Response, next: NextFunction) => {

@@ -6,7 +6,7 @@ import {
   createTicketService,
   deleteTicketService,
   updateTicketService,
-} from "../controller/ticket/ticketControllers";
+} from "../controller/ticketControllers";
 
 const ticketRouter = express.Router();
 

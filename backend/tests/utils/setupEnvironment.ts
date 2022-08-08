@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Movie from "../../src/models/Movie";
-import Ticket from "../../src/models/ticket/ticket";
+import Ticket from "../../src/models/ticket";
 
 const setupEnvironment = async () => {
   /* istanbul ignore next */

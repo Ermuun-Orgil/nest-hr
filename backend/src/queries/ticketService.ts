@@ -1,5 +1,5 @@
 import { Request } from "express";
-import Ticket from "../../models/ticket/ticket";
+import Ticket from "../models/ticket";
 
 export const getAllTicket = () => {
   return Ticket.find({});
@@ -10,7 +10,7 @@ export const getTicket = (request: Request) => {
 };
 
 export const getTickets = async (request: Request) => {
-  return Ticket.find({
+  const ticket = await Ticket.find({
     $or: [
       { reporter_id: request.body.id },
       {
@@ -18,6 +18,11 @@ export const getTickets = async (request: Request) => {
       },
     ],
   });
+
+  if (ticket.length === 0) {
+    throw new Error("Not ticket found");
+  }
+  return ticket;
 };
 
 export const updateTicket = async (request: Request) => {

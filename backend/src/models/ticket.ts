@@ -39,6 +39,7 @@ const ticketSchema = new Schema({
   },
   description: { type: String, required: true },
   history: [historySchema],
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Ticket = mongoose.model("ticket", ticketSchema);

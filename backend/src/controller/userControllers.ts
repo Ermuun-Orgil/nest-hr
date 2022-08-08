@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
-import { findUserId, getUsers, addUser, deleteUser, updateUser, addUserToGroup, getKpi } from "../queries/userService";
+import { findUserId, getUsers, addUser, deleteUser, updateUser, addUserToGroup } from "../queries/userService";
 
 export const getUsersService = async (request: Request, response: Response) => {
   console.log("getUsersService running");
@@ -60,16 +60,6 @@ export const deleteUserService = async (request: Request, response: Response) =>
   } catch (error) {
     /* istanbul ignore next */
     return response.status(500).send(error);
-  }
-};
-
-export const getKpiService = async (req: Request, res: Response) => {
-  try {
-    const result = await getKpi(req, res);
-    return res.status(200).send(result);
-  } catch (error) {
-    /* istanbul ignore next */
-    return res.status(500).send(error);
   }
 };
 

@@ -17,7 +17,7 @@ const groupSchema = new Schema({
   salaryInfo: { type: Array, default: ["own", "r"] },
   ladderInfo: { type: Array, default: ["own", "r"] },
   profile: { type: Array, default: ["own", "r"] },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now, immutable: true },
 });
 
 const Group = mongoose.model("groups", groupSchema);

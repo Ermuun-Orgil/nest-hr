@@ -1,2 +1,2 @@
 export * from "./authenticateToken";
-export * from "./checkPermission";
+export * from "./middlewares";

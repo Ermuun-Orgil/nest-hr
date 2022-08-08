@@ -6,7 +6,7 @@ import { UserType } from "../utils/types/user";
 export default async function authLogin(req: Request, res: Response) {
   const { email, password } = req.body;
   let existingUser: UserType | null;
-  console.log("authLogin is runngin");
+  console.log("authLogin is runngin: ", email, password);
   try {
     // eslint-disable-next-line no-use-before-define
     existingUser = await db.user.findOne({ email });
@@ -16,6 +16,7 @@ export default async function authLogin(req: Request, res: Response) {
       error: "Error! Something went wrong.",
     });
   }
+  console.log("existingUser: ", existingUser);
   if (!existingUser || existingUser.password !== password) {
     return res.status(400).json({
       success: false,
@@ -31,7 +32,7 @@ export default async function authLogin(req: Request, res: Response) {
       { _id: existingUser._id, email: existingUser.email, userGroup: existingUser.userGroup },
       process.env.JWT_SECRET || "",
       {
-        expiresIn: "1h",
+        expiresIn: "24h",
       }
     );
   } catch (err) {

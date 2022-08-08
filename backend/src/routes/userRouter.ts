@@ -1,14 +1,13 @@
 import express from "express";
 import {
   getUsersService,
-  getUserService,
-  createUserService,
-  deleteUserService,
-  updateUserService,
-  addUserToGroupService,
-  getKpiService,
+  // getUserService,
+  // createUserService,
+  // deleteUserService,
+  // updateUserService,
+  // addUserToGroupService,
 } from "../controller/userControllers";
-import { authenticateToken, authAddtogroup } from "../middlewares";
+import { checkPermission, tokenCheck } from "../middlewares";
 // import checkMiddle from "../middlewares/checkMiddle";
 // import kpiPermission from "../middlewares/kpiPermission";
 import authLogin from "../middlewares/authLogin";
@@ -16,23 +15,18 @@ import authLogin from "../middlewares/authLogin";
 
 const userRouter = express.Router();
 
-userRouter.post(
-  "/users",
-  // [authenticateToken, checkMiddle({ module: "user", action: "read" }), authUsers],
-  getUsersService
-);
-userRouter.get("/user/:id", getUserService);
-userRouter.patch("/user/:id", updateUserService);
-userRouter.post(
-  "/user",
-  // [checkMiddle({ mode: "user", action: "update", groups: getGroups() }), authUsers],
-  createUserService
-);
-userRouter.delete("/user", deleteUserService);
-userRouter.post("/addtogroup", [authenticateToken, authAddtogroup], addUserToGroupService);
-userRouter.post("/login", authLogin);
+userRouter.get("/users", [tokenCheck, checkPermission({ module: "users", action: "read" })], getUsersService);
+// userRouter.get("/user/:id", getUserService);
+// userRouter.patch("/user/:id", updateUserService);
+// userRouter.post(
+//   "/user",
+//   // [checkMiddle({ mode: "user", action: "update", groups: getGroups() }), authUsers],
+//   createUserService
+// );
+// userRouter.delete("/user", deleteUserService);
+// userRouter.post("/addtogroup", [authenticateToken], addUserToGroupService);
 
-//  get user info APIs
-userRouter.get("/kpi", [authenticateToken], getKpiService);
+// In order to get Token use this API
+userRouter.post("/login", authLogin);
 
 export default userRouter;

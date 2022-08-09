@@ -17,7 +17,8 @@ describe("Testing user CRUD", () => {
       email: "user1@gmail.com",
       password: "user1",
     });
-    expect(res).toBe(200);
+    console.log(res);
+    expect(res.status).toBe(200);
     const data = JSON.parse(res.text);
     expect(data.data.email).toBe("user1@gmail.com");
     userToken = data.data.token;

@@ -6,10 +6,12 @@ import User from "../../src/models/User";
 
 const setupEnvironment = async () => {
   /* istanbul ignore next */
-  // if (!process.env.MONGODB_URL) {
-  process.env.MONGODB_URL = "mongodb://localhost:27017/test_nest_hr";
-  process.env.JWT_SECRET = "thisisasamplesecret";
-  // }
+  if (!process.env.MONGODB_URL) {
+    process.env.MONGODB_URL = "mongodb://localhost:27017/test_nest_hr";
+  }
+  if (!process.env.JWT_SECRET) {
+    process.env.JWT_SECRET = "thisisasamplesecret";
+  }
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect(process.env.MONGODB_URL, {});
     await Movie.deleteMany();

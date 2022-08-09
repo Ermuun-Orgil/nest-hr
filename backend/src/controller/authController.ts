@@ -3,39 +3,28 @@ import { sign } from "jsonwebtoken";
 import db from "../models";
 import { UserType } from "../utils/types/user";
 
+const User = db.user;
 export async function authLogin(req: Request, res: Response) {
   const { email, password } = req.body;
   let existingUser: UserType | null;
 
   try {
-    existingUser = await db.user.findOne({ email, password });
-  } catch {
+    existingUser = await User.findOne({ email, password });
+    if (!existingUser) {
+      throw new Error("User not Found!");
+    }
+  } catch (e) {
     return res.status(404).json({
       success: false,
-      error: "Error! User not found in DB.",
+      error: e,
     });
   }
 
-  if (!existingUser) {
-    return res.status(400).json({
-      success: false,
-      error: "Wrong details please check at once",
-    });
-  }
-
-  let token: string;
-  try {
-    token = sign(
-      { _id: existingUser._id, email: existingUser.email, userGroup: existingUser.userGroup },
-      process.env.JWT_SECRET || "",
-      { expiresIn: "24h" }
-    );
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      error: "Error! Something went wrong.",
-    });
-  }
+  const token = sign(
+    { _id: existingUser._id, email: existingUser.email, userGroup: existingUser.userGroup },
+    process.env.JWT_SECRET || "",
+    { expiresIn: "24h" }
+  );
 
   return res.status(200).json({
     success: true,
@@ -50,7 +39,7 @@ export async function authLogin(req: Request, res: Response) {
 // ---------------------------------Sign Up --------------------------------------------
 
 export const authRegister = (req: Request, res: Response, next: NextFunction) => {
-  db.user.findOne({ $or: [{ userName: req.body.userName }, { email: req.body.email }] }).exec((err: any, user: any) => {
+  User.findOne({ $or: [{ userName: req.body.userName }, { email: req.body.email }] }).exec((err: any, user: any) => {
     if (err) {
       res.status(500).send({ message: err });
       return;

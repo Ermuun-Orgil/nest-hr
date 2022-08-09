@@ -12,12 +12,18 @@ afterAll(async () => {
 
 let userToken: string;
 describe("Testing user CRUD", () => {
+  it("Trying Login Service with wrong information", async () => {
+    const res = await request(app).post("/login").send({
+      email: "user5@gmail.com",
+      password: "user5",
+    });
+    expect(res.status).toBe(404);
+  });
   it("Trying Login Service and it should return data with success: true", async () => {
     const res = await request(app).post("/login").send({
       email: "user1@gmail.com",
       password: "user1",
     });
-    console.log(res);
     expect(res.status).toBe(200);
     const data = JSON.parse(res.text);
     expect(data.data.email).toBe("user1@gmail.com");

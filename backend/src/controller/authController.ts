@@ -10,9 +10,9 @@ export async function authLogin(req: Request, res: Response) {
   try {
     existingUser = await db.user.findOne({ email, password });
   } catch {
-    return res.status(400).json({
+    return res.status(404).json({
       success: false,
-      error: "Error! Something went wrong.",
+      error: "Error! User not found in DB.",
     });
   }
 

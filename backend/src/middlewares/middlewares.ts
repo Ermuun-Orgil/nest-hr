@@ -23,6 +23,7 @@ export const tokenCheck = async (req: Request, res: Response, next: NextFunction
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
       res.status(401).json({ message: "Expired token" });
+      return;
     }
 
     res.status(500).json({ message: "Failed to authenticate user" });

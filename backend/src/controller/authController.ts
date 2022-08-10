@@ -16,14 +16,14 @@ export async function authLogin(req: Request, res: Response) {
   } catch (e) {
     return res.status(404).json({
       success: false,
-      error: e,
+      e,
     });
   }
 
   const token = sign(
     { _id: existingUser._id, email: existingUser.email, userGroup: existingUser.userGroup },
     process.env.JWT_SECRET || "",
-    { expiresIn: "24h" }
+    { expiresIn: "365d" }
   );
 
   return res.status(200).json({

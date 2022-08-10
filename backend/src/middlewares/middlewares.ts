@@ -9,24 +9,20 @@ const User = db.user;
 export const tokenCheck = async (req: Request, res: Response, next: NextFunction) => {
   const token: string | undefined = req.headers?.authorization;
 
-  try {
-    if (!token) {
-      res.status(401).json({ message: "No token provided or Inviled Token" });
-      return;
-    }
-    verify(token.split(" ")[1], process.env.JWT_SECRET || "secret", (err: any, decoded: any) => {
-      if (err) res.status(401).json({ message: "Inviled Token", error: err });
-      res.locals.userId = decoded._id;
-      req.body.user = decoded;
-      next();
+  if (!token) {
+    res.status(401).json({ message: "No token provided or Inviled Token" });
+  } else {
+    verify(token.split(" ")[1], process.env.JWT_SECRET || "thisisasamplesecret", (err: any, decoded: any) => {
+      if (err && err.name === "TokenExpiredError") {
+        res.status(401).json({ message: "Expired token" });
+      } else if (err) {
+        res.status(403).json({ message: "Inviled Token", error: err });
+      } else {
+        res.locals.userId = decoded._id;
+        req.body.user = decoded;
+        next();
+      }
     });
-  } catch (error: any) {
-    if (error.name === "TokenExpiredError") {
-      res.status(401).json({ message: "Expired token" });
-      return;
-    }
-
-    res.status(500).json({ message: "Failed to authenticate user" });
   }
 };
 
@@ -35,33 +31,33 @@ export const checkPermission =
   ({ module, action }: any) =>
   async (req: Request, res: Response, next: NextFunction) => {
     let permitted = false;
-    if (!res.locals.userId && !req.body?._id)
-      res.status(403).send({
-        message: "User not found",
-      });
+
+    // this condition will be usefull if anyone tries to use CheckPermission without tokenCheck
+    // if (!res.locals.userId && !req.body?._id)
+    //   res.status(403).send({
+    //     message: "User not found",
+    //   });
 
     const userWithGroups: any = await User.findById(res.locals.userId || req.body?._id)
       .populate("userGroup")
       .where("user")
       .select("userGroup");
-    try {
-      userWithGroups.userGroup.forEach((group: any) => {
-        if (group.permissions && group.permissions[module]) {
-          if (group.permissions[module][action]) {
-            permitted = true;
-          }
+
+    userWithGroups.userGroup.forEach((group: any) => {
+      if (group.permissions && group.permissions[module]) {
+        if (group.permissions[module][action]) {
+          permitted = true;
         }
-      });
-    } catch (e) {
-      res.status(400).send(`error: ${e}`);
-      return;
-    }
-    if (!permitted)
+      }
+    });
+
+    if (!permitted) {
       res.status(403).send({
         message: "Permission denied",
       });
-
-    next();
+    } else {
+      next();
+    }
   };
 
 // export const authAddtogroup = async (req: Request, res: Response, next: NextFunction) => {

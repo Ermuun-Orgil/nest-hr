@@ -14,8 +14,10 @@ const userRouter = express.Router();
 
 userRouter.post("/login", loginService);
 userRouter.post("/register", [authRegister], createUserService);
+
 userRouter.get("/users", [tokenCheck, checkPermission({ module: "users", action: "read" })], getUsersService);
 userRouter.patch("/users", [tokenCheck, checkPermission({ module: "users", action: "update" })], updateUserService);
+
 // userRouter.post("/user", [tokenCheck, checkPermission({ module: "user", action: "create" })], createUserService);
 
 // userRouter.get("/user/:id", getUserService);

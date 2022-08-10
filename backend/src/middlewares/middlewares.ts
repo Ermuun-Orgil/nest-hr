@@ -10,7 +10,7 @@ export const tokenCheck = async (req: Request, res: Response, next: NextFunction
   const token: string | undefined = req.headers?.authorization;
 
   if (!token) {
-    res.status(401).json({ message: "No token provided or Inviled Token" });
+    res.status(401).json({ message: "No authorization token provided!" });
   } else {
     verify(token.split(" ")[1], process.env.JWT_SECRET || "thisisasamplesecret", (err: any, decoded: any) => {
       if (err && err.name === "TokenExpiredError") {

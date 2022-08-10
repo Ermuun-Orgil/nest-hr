@@ -1,22 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { sign } from "jsonwebtoken";
 import db from "../models";
-import { UserType } from "../utils/types/user";
 
 const User = db.user;
 export async function authLogin(req: Request, res: Response) {
   const { email, password } = req.body;
-  let existingUser: UserType | null;
 
-  try {
-    existingUser = await User.findOne({ email, password });
-    if (!existingUser) {
-      throw new Error("User not Found!");
-    }
-  } catch (e) {
+  const existingUser = await User.findOne({ email, password });
+  if (!existingUser) {
     return res.status(404).json({
       success: false,
-      e,
+      message: "Invalid User Detail!",
     });
   }
 

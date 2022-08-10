@@ -16,7 +16,7 @@ export const tokenCheck = async (req: Request, res: Response, next: NextFunction
       if (err && err.name === "TokenExpiredError") {
         res.status(401).json({ message: "Expired token" });
       } else if (err) {
-        res.status(403).json({ message: "Inviled Token", error: err });
+        res.status(403).json({ message: "Inviled Token" });
       } else {
         res.locals.userId = decoded._id;
         req.body.user = decoded;

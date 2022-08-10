@@ -7,11 +7,12 @@ const User = db.user;
 
 // Checking token validation
 export const tokenCheck = async (req: Request, res: Response, next: NextFunction) => {
-  const token: string | undefined = req.headers?.authorization;
+  const token: string | undefined = req.headers.authorization;
 
   if (!token) {
     res.status(401).json({ message: "No authorization token provided!" });
   } else {
+    /* istanbul ignore next */
     verify(token.split(" ")[1], process.env.JWT_SECRET || "thisisasamplesecret", (err: any, decoded: any) => {
       if (err && err.name === "TokenExpiredError") {
         res.status(401).json({ message: "Expired token" });
@@ -38,7 +39,7 @@ export const checkPermission =
     //     message: "User not found",
     //   });
 
-    const userWithGroups: any = await User.findById(res.locals.userId || req.body?._id)
+    const userWithGroups: any = await User.findById(res.locals.userId)
       .populate("userGroup")
       .where("user")
       .select("userGroup");

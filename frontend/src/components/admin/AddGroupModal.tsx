@@ -25,11 +25,15 @@ const styles = {
     display: "flex",
     flexDirection: "column",
   },
+  dropdownContainer: {
+    width: "100%",
+  },
 };
 
-type AddEmployeeModalType = {
+type AddGroupModalType = {
   modal: boolean;
   setModal: Dispatch<SetStateAction<boolean>>;
+  permissionNames: Array<string>;
 };
 
 const ITEM_HEIGHT = 48;
@@ -43,16 +47,28 @@ const MenuProps = {
   },
 };
 
-const permissions = ["Users", "Salary"];
+const permissions = ["Read", "Write", "Update", "Delete"];
 
-export const AddGroupModal: FC = ({ modal, setModal }: AddEmployeeModalType) => {
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
+export const AddGroupModal: FC = ({ modal, setModal, permissionNames }: AddGroupModalType) => {
+  const [selectedActions, setSelectedActions] = useState([]);
+  const [permissionName, setPermissionName] = useState("");
+  const [allPermissions, setAllPermissions] = useState({});
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedPermissions>) => {
+  const actionChange = (event: SelectChangeEvent<typeof selectedActions>) => {
     const {
       target: { value },
     } = event;
-    setSelectedPermissions(typeof value === "string" ? value.split(",") : value);
+    setSelectedActions(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const AddButton = () => {
+    let selectedActionsObj = {};
+    selectedActions.map(e => {
+      selectedActionsObj = { ...selectedActionsObj, [e]: true };
+    });
+    setAllPermissions({
+      [permissionName]: selectedActionsObj,
+    });
   };
 
   return (
@@ -69,26 +85,48 @@ export const AddGroupModal: FC = ({ modal, setModal }: AddEmployeeModalType) => 
             <Typography textAlign={"center"} variant="h5">
               Add Group
             </Typography>
-            <TextField label="Name" />
-            <FormControl sx={{ m: 1, width: "auto" }}>
-              <InputLabel id="demo-multiple-name-label">Permissions</InputLabel>
-              <Select
-                labelId="demo-multiple-name-label"
-                id="demo-multiple-name"
-                multiple
-                value={selectedPermissions}
-                onChange={handleChange}
-                input={<OutlinedInput label="Name" />}
-                MenuProps={MenuProps}
-              >
-                {permissions.map(name => (
-                  <MenuItem key={name} value={name}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Button variant="contained">Add</Button>
+            <TextField label="Name" onChange={e => setPermissionName(e.target.value)} />
+            <Stack direction={"row"} alignItems="center">
+              <FormControl sx={{ m: 1, flex: 1 }}>
+                <InputLabel id="permission">Permissions</InputLabel>
+                <Select
+                  labelId="permission"
+                  id="demo-multiple-name"
+                  multiple
+                  value={selectedActions}
+                  onChange={actionChange}
+                  input={<OutlinedInput label="Name" />}
+                  MenuProps={MenuProps}
+                >
+                  {permissions.map(name => (
+                    <MenuItem key={name} value={name}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ m: 1, flex: 1 }}>
+                <InputLabel id="actions">Actions</InputLabel>
+                <Select
+                  labelId="actions"
+                  id="demo-multiple-name"
+                  multiple
+                  value={selectedActions}
+                  onChange={actionChange}
+                  input={<OutlinedInput label="Name" />}
+                  MenuProps={MenuProps}
+                >
+                  {permissionNames.map(name => (
+                    <MenuItem key={name} value={name}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+            <Button variant="contained" onClick={AddButton}>
+              Add
+            </Button>
           </Stack>
         </Box>
       </Modal>

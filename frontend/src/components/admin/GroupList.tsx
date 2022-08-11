@@ -70,6 +70,7 @@ const GroupList: FC = () => {
       },
     },
   ];
+  const permissionNames = ["users", "salary-all"];
   return (
     <Box sx={styles.container}>
       <Button onClick={() => setModal(true)}>Add Group</Button>
@@ -89,7 +90,7 @@ const GroupList: FC = () => {
           }}
         />
       </Box>
-      <AddGroupModal modal={modal} setModal={setModal} />
+      <AddGroupModal modal={modal} setModal={setModal} permissionNames={permissionNames} />
       <GroupDetail modal={detailModal} setModal={setDetailModal} data={selectedData} />
     </Box>
   );

@@ -42,21 +42,25 @@ const MenuProps = {
 const permissions = ["Users", "Salary"];
 
 export const GroupDetail: FC = ({ modal, setModal, data }: GroupDetailType) => {
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [selectedActions, setSelectedActions] = useState([]);
   const [group, setGroup] = useState<GroupDataType>();
+
+  console.log(data);
 
   useEffect(() => {
     setGroup(data);
+    const actionNames = data ? Object.keys(data.permissions) : [];
+    setSelectedActions(actionNames);
   }, [data]);
 
   const handleChange = (val, key) => {
     setGroup({ ...group, [key]: val });
   };
-  const handleChangePermissions = (event: SelectChangeEvent<typeof selectedPermissions>) => {
+  const handleChangeActions = (event: SelectChangeEvent<typeof selectedActions>) => {
     const {
       target: { value },
     } = event;
-    setSelectedPermissions(typeof value === "string" ? value.split(",") : value);
+    setSelectedActions(typeof value === "string" ? value.split(",") : value);
   };
   const updateData = () => {
     console.log("update data");
@@ -89,8 +93,8 @@ export const GroupDetail: FC = ({ modal, setModal, data }: GroupDetailType) => {
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
                 multiple
-                value={selectedPermissions}
-                onChange={handleChangePermissions}
+                value={selectedActions}
+                onChange={handleChangeActions}
                 input={<OutlinedInput label="Name" />}
                 MenuProps={MenuProps}
               >

@@ -14,10 +14,14 @@ export type GroupDataType = {
     users: {
       read: boolean;
       write: boolean;
+      update: boolean;
+      delete: boolean;
     };
     "salary-all": {
       read: boolean;
       write: boolean;
+      update: boolean;
+      delete: boolean;
     };
   };
 };
